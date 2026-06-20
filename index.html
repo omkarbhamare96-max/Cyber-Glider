@@ -224,16 +224,15 @@
     function slide() {
         if (!isSliding && !isJumping && !isGameOver) {
             isSliding = true;
-            // Shrink player to slide
-            playerGroup.scale.y = 0.5;
-            playerGroup.position.y = -1; // Lower them
+            playerGroup.scale.y = 0.5; // Shrink
+            playerGroup.position.y = -1; // Duck down
             setTimeout(() => {
                 if(!isGameOver) {
                     isSliding = false;
                     playerGroup.scale.y = 1;
                     playerGroup.position.y = 0;
                 }
-            }, 800); // Slide duration
+            }, 800);
         }
     }
 
@@ -266,7 +265,7 @@
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('game-over-screen').classList.add('hidden');
         score = 0;
-        gameSpeed = 0.2; // Reset to slow speed
+        gameSpeed = 0.2; 
         currentLane = 0;
         playerGroup.position.set(0, 0, 0);
         playerGroup.scale.y = 1;
@@ -288,11 +287,11 @@
         requestAnimationFrame(animate);
 
         if (!isGameOver) {
-            gameSpeed += 0.00005; // SLOW speed increase
+            gameSpeed += 0.00005; 
             score += gameSpeed * 10;
             document.getElementById('score-display').innerText = Math.floor(score);
 
-            // Move lines (road effect)
+            // Move lines
             lines.forEach(l => {
                 l.position.z += gameSpeed;
                 if(l.position.z > 5) l.position.z -= 100;
@@ -334,21 +333,19 @@
                 leftLeg.rotation.x = Math.PI/4; rightLeg.rotation.x = Math.PI/4;
             }
 
-            // Obstacles
-            playerBox.setFromObject(torso); // Use torso for hitbox to be forgiving
+            // Obstacles & Collision
+            playerBox.setFromObject(torso); 
             playerBox.expandByScalar(0.2);
 
             obstacles.forEach(obs => {
                 obs.position.z += gameSpeed;
                 
-                // Collision
                 if (obs.userData.type === 'jump') {
                     obs.userData.hitBox.setFromCenterAndSize(
                         new THREE.Vector3(obs.position.x, 0.75, obs.position.z),
                         new THREE.Vector3(3, 1.5, 1)
                     );
                 } else {
-                    // Slide obstacle (only hit if not sliding)
                     obs.userData.hitBox.setFromCenterAndSize(
                         new THREE.Vector3(obs.position.x, 3.5, obs.position.z),
                         new THREE.Vector3(4, 1, 1)
@@ -359,7 +356,6 @@
                     gameOver();
                 }
 
-                // Recycle
                 if (obs.position.z > 10) {
                     obs.position.z -= 300;
                     obs.position.x = (Math.floor(Math.random() * 3) - 1) * LANE_WIDTH;
